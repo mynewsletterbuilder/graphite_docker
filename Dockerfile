@@ -10,9 +10,6 @@ run     apt-get -y install nodejs python-django-tagging python-simplejson python
 			    python-pysqlite2 python-support python-pip gunicorn     \
 			    supervisor nginx-light nodejs git wget curl
 
-# Install statsd
-run	mkdir /src && git clone https://github.com/etsy/statsd.git /src/statsd
-
 # Install required packages
 run	pip install whisper pytz
 run	pip install --install-option="--prefix=/var/lib/graphite" --install-option="--install-lib=/var/lib/graphite/lib" carbon
@@ -22,9 +19,6 @@ run	pip install --install-option="--prefix=/var/lib/graphite" --install-option="
 run     cd ~ &&\
 	wget https://grafanarel.s3.amazonaws.com/builds/grafana_3.1.0-1468321182_amd64.deb &&\
         dpkg -i grafana_3.1.0-1468321182_amd64.deb && rm grafana_3.1.0-1468321182_amd64.deb
-
-# statsd
-add	./statsd/config.js /src/statsd/config.js
 
 # Add graphite config
 add	./graphite/initial_data.json /var/lib/graphite/webapp/graphite/initial_data.json
@@ -56,15 +50,8 @@ expose	2004
 # Carbon cache query port
 expose	7002
 
-# Statsd UDP port
-expose	8125/udp
-# Statsd Management port
-expose	8126
-
-env STATSD_IPV6 0
-
 # we probably want to do this
-# volume /data
+volume /data
 
 add ./bin/init /usr/bin/init
 
